@@ -1,9 +1,16 @@
 # common
 **/.DS_Store
 *.env
+**/.vscode
 
 # Go
 go/lfm
 
 # Scala
 **/target
+**/.metals
+**/.bloop
+
+# .NET
+dotnet/bin
+dotnet/obj

@@ -1,0 +1,9 @@
+# common
+**/.DS_Store
+*.env
+
+# Go
+go/lfm
+
+# Scala
+**/target

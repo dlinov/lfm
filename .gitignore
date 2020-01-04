@@ -14,3 +14,9 @@ go/lfm
 # .NET
 dotnet/bin
 dotnet/obj
+
+# Haskell
+haskell/.stack-work/
+haskell/stack.yaml.lock
+haskell/bin
+haskell/lfm.cabal

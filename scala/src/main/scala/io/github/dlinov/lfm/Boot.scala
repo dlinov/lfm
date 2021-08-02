@@ -12,7 +12,6 @@ import io.circe.syntax._
 import io.circe.parser._
 import org.http4s._
 import org.http4s.implicits._
-import org.http4s.client.blaze._
 import org.http4s.client._
 import org.http4s.circe._
 
@@ -36,10 +35,7 @@ object Boot extends IOApp {
           )
         }
         blockingPool <- EitherT.liftF(IO(Executors.newSingleThreadExecutor()))
-        httpClient <- EitherT.liftF(IO {
-          val blocker = Blocker.liftExecutorService(blockingPool)
-          JavaNetClientBuilder[IO](blocker).create // : Client[IO]
-        })
+        httpClient <- EitherT.liftF(IO(JavaNetClientBuilder[IO].create))
         resp <- EitherT(httpClient.expect[String](url).attempt)
           .leftMap(_.getMessage)
         doc <- EitherT.fromEither[IO](parse(resp))

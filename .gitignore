@@ -10,7 +10,7 @@ go/lfm
 **/target
 **/.metals
 **/.bloop
-**/project/metals.sbt
+**/metals.sbt
 
 # .NET
 dotnet/bin

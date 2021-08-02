@@ -2,10 +2,10 @@ enablePlugins(GraalVMNativeImagePlugin)
 
 name := "lfm"
 
-scalaVersion := "2.13.2"
+scalaVersion := "3.0.1"
 
-val circeVersion = "0.13.0"
-val http4sVersion = "0.21.4"
+val circeVersion = "0.14.1"
+val http4sVersion = "0.23.0"
 
 libraryDependencies ++= Seq(
   "io.circe" %% "circe-core" % circeVersion,

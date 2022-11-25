@@ -2,22 +2,3 @@
 **/.DS_Store
 *.env
 **/.vscode
-
-# Go
-go/lfm
-
-# Scala
-**/target
-**/.metals
-**/.bloop
-**/metals.sbt
-
-# .NET
-dotnet/bin
-dotnet/obj
-
-# Haskell
-haskell/.stack-work/
-haskell/stack.yaml.lock
-haskell/bin
-haskell/lfm.cabal

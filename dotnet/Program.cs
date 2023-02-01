@@ -1,21 +1,28 @@
 ﻿using System;
-// using System.Collections.Generic;
 using System.Net.Http;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Text.Json.Serialization.Metadata;
 using System.Threading.Tasks;
 
 namespace dotnet
 {
     class Program
     {
+        private const String BaseUrl = "https://ws.audioscrobbler.com/2.0/?method=user.getinfo&format=json";
         private static readonly HttpClient client = new HttpClient();
-        private static readonly String baseUrl = "https://ws.audioscrobbler.com/2.0/?method=user.getinfo&format=json";
+        private static readonly JsonSerializerOptions options = new JsonSerializerOptions
+        {
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+            TypeInfoResolver = EntryContext.Default
+        };
+        private static readonly JsonTypeInfo<LFMResponse> ti =
+            (JsonTypeInfo<LFMResponse>) options.GetTypeInfo(typeof(LFMResponse));
 
         static void Main(string[] args)
         {
             Console.WriteLine("Fetching data...");
-            var url = $"{baseUrl}&user={args[1]}&api_key={args[0]}";
+            var url = $"{BaseUrl}&user={args[1]}&api_key={args[0]}";
             var response = MakeRequest(url).Result;
             Console.WriteLine(response.Stats.Avg);
             Console.WriteLine($"It's needed to listen to {response.Stats.Rem} more songs to make avg {response.Stats.Next}");
@@ -26,24 +33,15 @@ namespace dotnet
             var response = await client.GetAsync(url);
             // var responseString = await response.Content.ReadAsStringAsync();
             var responseStream = await response.Content.ReadAsStreamAsync();
-            var options = new JsonSerializerOptions
-            {
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-            };
-            return await JsonSerializer.DeserializeAsync<LFMResponse>(responseStream, options);
+            return await JsonSerializer.DeserializeAsync<LFMResponse>(responseStream, ti);
         }
     }
 
-    class Statistics {
-        public double Avg { get; set; }
-        public int Next { get; set; }
-        public int Rem { get; set; }
-    }
+    record Statistics(double Avg, int Next, int Rem);
 
-    class LFMResponse
+    record LFMResponse(User User)
     {
-        public User User { get; set; }
-
+        [JsonIgnore]
         public Statistics Stats
         {
             get
@@ -55,27 +53,15 @@ namespace dotnet
                 var avg = played / days;
                 var next = Math.Ceiling(avg);
                 var rem = Math.Round(days * next - played);
-                return new Statistics
-                {
-                    Avg = avg,
-                    Next = (int) next,
-                    Rem = (int) rem
-                };
+                return new Statistics(avg, (int) next, (int) rem);
             }
         }
     }
 
-    class User
-    {
-        public String Playcount { get; set; }
-        public Registered Registered { get; set; }
-    }
+    record User(string Playcount, Registered Registered);
 
-    class Registered
-    {
-        public String Unixtime { get; set; }
-        
-        [JsonPropertyName("#text")]
-        public long Text { get; set; }
-    }
+    record Registered(string Unixtime, [property: JsonPropertyName("#text")] long Text);
+    
+    [JsonSerializable(typeof(LFMResponse))]
+    partial class EntryContext : JsonSerializerContext { }
 }

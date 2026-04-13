@@ -1,7 +1,7 @@
 . ../*.env
 
+sbt "stage; GraalVMNativeImage/packageBin"
 # JVM
-sbt "run $API_KEY $USER_NAME"
-
+time ./target/universal/stage/bin/lfm $API_KEY $USER_NAME
 # Graal
-sbt 'graalvm-native-image:packageBin' && time ./target/graalvm-native-image/lfm $API_KEY $USER_NAME
+time ./target/graalvm-native-image/lfm $API_KEY $USER_NAME

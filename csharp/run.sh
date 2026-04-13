@@ -35,6 +35,6 @@ else
     RID="win-x64"
 fi
 
-dotnet publish -c Release -r $RID --self-contained true
-time ./bin/Release/net8.0/$RID/publish/lfm $API_KEY $USER_NAME
+dotnet publish -c Release -r $RID
+time ./bin/Release/net10.0/$RID/publish/lfm $API_KEY $USER_NAME
 # dotnet run -c Debug -r $RID $API_KEY $USER_NAME
